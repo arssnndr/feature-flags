@@ -1,0 +1,125 @@
+<div class="profile-page" [attr.data-theme]="profileTheme()">
+  @if (!isProfileEnabled()) {
+    <div class="feature-disabled">
+      <div class="disabled-card">
+        <h2>⚠️ Profile Not Available</h2>
+        <p>The user profile feature is currently disabled via GrowthBook feature flag.</p>
+        <p class="flag-info">Feature Flag: <code>enable_user_profile</code></p>
+        <button class="button primary" type="button" (click)="goHome()">Back to Home</button>
+      </div>
+    </div>
+  } @else {
+    <header class="profile-header">
+      <button class="button ghost" type="button" (click)="goHome()">← Back to Home</button>
+      <div class="feature-badge">
+        <span class="badge success">✓ Profile Enabled</span>
+        <span class="badge theme">Theme: {{ profileTheme() }}</span>
+      </div>
+    </header>
+
+    <div class="profile-container">
+      <div class="profile-sidebar">
+        <div class="profile-card">
+          <div class="avatar">{{ userInfo().avatar }}</div>
+          <h2>{{ userInfo().name }}</h2>
+          <p class="role">{{ userInfo().role }}</p>
+          <p class="email">{{ userInfo().email }}</p>
+          <p class="join-date">Member since {{ userInfo().joinDate }}</p>
+
+          <button class="button primary full-width" type="button">Edit Profile</button>
+        </div>
+
+        <div class="stats-card">
+          <h3>Quick Stats</h3>
+          @for (stat of stats; track stat.label) {
+            <div class="stat-item">
+              <span class="stat-label">{{ stat.label }}</span>
+              <span class="stat-value">{{ stat.value }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="profile-main">
+        <div class="section">
+          <h2>About</h2>
+          <div class="about-card">
+            <p>Product Manager specializing in feature flag management and experimentation. Passionate about data-driven decision making and continuous delivery.</p>
+
+            <div class="skills">
+              <span class="skill-tag">Feature Flags</span>
+              <span class="skill-tag">A/B Testing</span>
+              <span class="skill-tag">Product Analytics</span>
+              <span class="skill-tag">Continuous Delivery</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Recent Activity</h2>
+          <div class="activity-list">
+            @for (activity of activities; track activity.id) {
+              <div class="activity-item" [attr.data-type]="activity.type">
+                <div class="activity-icon">
+                  @switch (activity.type) {
+                    @case ('feature') {
+                      <span>🎯</span>
+                    }
+                    @case ('experiment') {
+                      <span>🧪</span>
+                    }
+                    @case ('rollout') {
+                      <span>📊</span>
+                    }
+                  }
+                </div>
+                <div class="activity-content">
+                  <p class="activity-action">{{ activity.action }}</p>
+                  <p class="activity-time">{{ activity.timestamp }}</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Preferences</h2>
+          <div class="preferences-card">
+            <div class="preference-item">
+              <div>
+                <h4>Email Notifications</h4>
+                <p>Receive updates about feature flag changes</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="preference-item">
+              <div>
+                <h4>Slack Integration</h4>
+                <p>Send rollout notifications to Slack</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="preference-item">
+              <div>
+                <h4>Auto-refresh Dashboard</h4>
+                <p>Automatically refresh metrics every minute</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

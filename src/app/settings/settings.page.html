@@ -1,0 +1,128 @@
+<div class="settings-page">
+  @if (!isSettingsEnabled()) {
+    <div class="feature-disabled">
+      <div class="disabled-card">
+        <h2>⚙️ Settings Not Available</h2>
+        <p>The settings panel feature is currently disabled via GrowthBook feature flag.</p>
+        <p class="flag-info">Feature Flag: <code>enable_settings</code></p>
+        <button class="button primary" type="button" (click)="goHome()">Back to Home</button>
+      </div>
+    </div>
+  } @else {
+    <div class="settings-container">
+      <header class="settings-header">
+        <div>
+          <h1>Settings</h1>
+          <p>Manage your application preferences and configurations</p>
+        </div>
+        <button class="button ghost" type="button" (click)="goHome()">Back to Home</button>
+      </header>
+
+      <div class="feature-badge">
+        <span class="badge success">✓ Settings Panel Enabled</span>
+        <span class="badge info">Powered by GrowthBook</span>
+      </div>
+
+      <div class="settings-layout">
+        <aside class="settings-sidebar">
+          <nav class="settings-nav">
+            <a href="#general" class="nav-item active">
+              <span class="nav-icon">⚙️</span>
+              General
+            </a>
+            <a href="#features" class="nav-item">
+              <span class="nav-icon">🎯</span>
+              Feature Flags
+            </a>
+            <a href="#integrations" class="nav-item">
+              <span class="nav-icon">🔌</span>
+              Integrations
+            </a>
+            <a href="#security" class="nav-item">
+              <span class="nav-icon">🔒</span>
+              Security
+            </a>
+          </nav>
+
+          <div class="sidebar-footer">
+            <button class="button secondary full-width" type="button" (click)="resetSettings()">
+              Reset to Defaults
+            </button>
+          </div>
+        </aside>
+
+        <main class="settings-main">
+          @for (section of sections(); track section.id) {
+            <section class="settings-section" [id]="section.id">
+              <div class="section-header">
+                <h2>{{ section.title }}</h2>
+                <p>{{ section.description }}</p>
+              </div>
+
+              <div class="settings-list">
+                @for (item of section.items; track item.id) {
+                  <div class="setting-item">
+                    <div class="setting-info">
+                      <h4>{{ item.label }}</h4>
+                      <p>{{ item.description }}</p>
+                    </div>
+
+                    <div class="setting-control">
+                      @switch (item.type) {
+                        @case ('toggle') {
+                          <label class="toggle">
+                            <input
+                              type="checkbox"
+                              [checked]="item.value"
+                              (change)="updateSetting(section.id, item.id, !item.value)">
+                            <span class="toggle-slider"></span>
+                          </label>
+                        }
+                        @case ('select') {
+                          <select
+                            class="select-input"
+                            [value]="item.value"
+                            (change)="updateSetting(section.id, item.id, $any($event.target).value)">
+                            @for (option of item.options; track option) {
+                              <option [value]="option">{{ option }}</option>
+                            }
+                          </select>
+                        }
+                        @case ('input') {
+                          <input
+                            type="text"
+                            class="text-input"
+                            [value]="item.value"
+                            (blur)="updateSetting(section.id, item.id, $any($event.target).value)">
+                        }
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </section>
+          }
+
+          <div class="settings-actions">
+            <button class="button primary" type="button" (click)="saveSettings()">
+              Save Changes
+            </button>
+            <button class="button ghost" type="button" (click)="goHome()">
+              Cancel
+            </button>
+          </div>
+
+          <div class="growthbook-info">
+            <h3>About Feature Flags</h3>
+            <p>This settings panel uses GrowthBook feature flags to control visibility and behavior. All settings can be modified remotely without deploying new code.</p>
+            <div class="info-badges">
+              <span class="info-badge">No Deploy Required</span>
+              <span class="info-badge">Real-time Updates</span>
+              <span class="info-badge">A/B Testing Ready</span>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,160 @@
+<div class="notifications-page">
+  @if (!isNotificationsEnabled()) {
+    <div class="feature-disabled">
+      <div class="disabled-card">
+        <h2>🔕 Notifications Not Available</h2>
+        <p>The notification center feature is currently disabled via GrowthBook feature flag.</p>
+        <p class="flag-info">Feature Flag: <code>enable_notifications</code></p>
+        <button class="button primary" type="button" (click)="goHome()">Back to Home</button>
+      </div>
+    </div>
+  } @else {
+    <div class="notifications-container">
+      <header class="notifications-header">
+        <div>
+          <h1>Notification Center</h1>
+          <p>Stay updated with all your feature flag activities</p>
+        </div>
+        <button class="button ghost" type="button" (click)="goHome()">Back to Home</button>
+      </header>
+
+      <div class="feature-badges">
+        <span class="badge success">✓ Notifications Enabled</span>
+        @if (isRealtimeEnabled()) {
+          <span class="badge realtime">
+            <span class="pulse"></span>
+            Real-time Updates Active
+          </span>
+        } @else {
+          <span class="badge offline">Real-time Updates Disabled</span>
+        }
+        @if (unreadCount() > 0) {
+          <span class="badge unread">{{ unreadCount() }} Unread</span>
+        }
+      </div>
+
+      <div class="notifications-toolbar">
+        <div class="filter-tabs">
+          <button class="tab active" type="button">All</button>
+          <button class="tab" type="button">Unread</button>
+          <button class="tab" type="button">Archived</button>
+        </div>
+        @if (unreadCount() > 0) {
+          <button class="button secondary" type="button" (click)="markAllAsRead()">
+            Mark all as read
+          </button>
+        }
+      </div>
+
+      <div class="notifications-list">
+        @if (notifications().length === 0) {
+          <div class="empty-state">
+            <span class="empty-icon">📭</span>
+            <h3>No notifications yet</h3>
+            <p>You're all caught up! Check back later for updates.</p>
+          </div>
+        } @else {
+          @for (notification of notifications(); track notification.id) {
+            <article
+              class="notification-card"
+              [class.unread]="!notification.read"
+              [attr.data-type]="notification.type">
+              <div class="notification-indicator">
+                @switch (notification.type) {
+                  @case ('success') {
+                    <span class="icon success">✓</span>
+                  }
+                  @case ('warning') {
+                    <span class="icon warning">⚠</span>
+                  }
+                  @case ('error') {
+                    <span class="icon error">✕</span>
+                  }
+                  @case ('info') {
+                    <span class="icon info">ℹ</span>
+                  }
+                }
+              </div>
+
+              <div class="notification-content">
+                <div class="notification-header">
+                  <h3>{{ notification.title }}</h3>
+                  <span class="notification-time">{{ notification.time }}</span>
+                </div>
+                <p>{{ notification.message }}</p>
+              </div>
+
+              <div class="notification-actions">
+                @if (!notification.read) {
+                  <button
+                    class="action-button"
+                    type="button"
+                    (click)="markAsRead(notification.id)"
+                    title="Mark as read">
+                    ✓
+                  </button>
+                }
+                <button
+                  class="action-button delete"
+                  type="button"
+                  (click)="deleteNotification(notification.id)"
+                  title="Delete">
+                  ✕
+                </button>
+              </div>
+            </article>
+          }
+        }
+      </div>
+
+      <div class="notification-settings">
+        <h3>Notification Settings</h3>
+        <div class="settings-grid">
+          <div class="setting-item">
+            <div>
+              <h4>Feature Flag Changes</h4>
+              <p>Get notified when flags are toggled</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div>
+              <h4>Rollout Milestones</h4>
+              <p>Alerts for 25%, 50%, 75%, 100%</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div>
+              <h4>Error Alerts</h4>
+              <p>Critical issues and error spikes</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-item">
+            <div>
+              <h4>Experiment Results</h4>
+              <p>When A/B tests reach significance</p>
+            </div>
+            <label class="toggle">
+              <input type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --sand-100: #f6f1e9;
+  --ink-900: #1b1b1b;
+  --ink-700: #2f2f2f;
+  --ink-600: #4a4a4a;
+  --ink-500: #6a6a6a;
+  --teal-700: #0f6b62;
+  --teal-600: #1a8a7e;
+  --teal-500: #2ea89a;
+  --coral-700: #b24a31;
+  --coral-500: #e76f51;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Space Grotesk', 'Helvetica Neue', sans-serif;
+  color: var(--ink-900);
+  background:
+    radial-gradient(circle at top left, rgba(231, 111, 81, 0.08), transparent 45%),
+    radial-gradient(circle at 20% 70%, rgba(46, 168, 154, 0.12), transparent 50%),
+    linear-gradient(180deg, #fbf8f2 0%, #f2f7f5 100%);
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Fraunces', 'Times New Roman', serif;
+}
+
+p {
+  margin: 0;
+}
+
+button,
+a {
+  font-family: inherit;
+}

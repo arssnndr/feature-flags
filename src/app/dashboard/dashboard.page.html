@@ -1,0 +1,106 @@
+<div class="dashboard-page">
+  @if (!isDashboardEnabled()) {
+    <div class="feature-disabled">
+      <div class="disabled-card">
+        <h2>⚠️ Dashboard Not Available</h2>
+        <p>The dashboard feature is currently disabled via GrowthBook feature flag.</p>
+        <p class="flag-info">Feature Flag: <code>enable_dashboard</code></p>
+        <button class="button primary" type="button" (click)="goHome()">Back to Home</button>
+      </div>
+    </div>
+  } @else {
+    <header class="dashboard-header">
+      <div>
+        <h1>Dashboard Analytics</h1>
+        <p>Real-time insights powered by feature flags</p>
+      </div>
+      <button class="button ghost" type="button" (click)="goHome()">Back to Home</button>
+    </header>
+
+    <div class="feature-badge">
+      <span class="badge success">✓ Feature Enabled via GrowthBook</span>
+      <span class="badge info">Chart Type: {{ chartType() }}</span>
+    </div>
+
+    <div class="metrics-grid">
+      @for (metric of metrics; track metric.id) {
+        <div class="metric-card">
+          <h3>{{ metric.title }}</h3>
+          <p class="metric-value">{{ metric.value }}</p>
+          <p class="metric-change" [class.positive]="metric.positive" [class.negative]="!metric.positive">
+            {{ metric.change }}
+          </p>
+        </div>
+      }
+    </div>
+
+    <div class="chart-section">
+      <h2>Weekly Activity - {{ chartType() }} chart</h2>
+      <div class="chart-container">
+        @if (chartType() === 'line') {
+          <svg class="line-chart" viewBox="0 0 700 300">
+            @for (point of chartData; track point.label; let i = $index) {
+              @if (i < chartData.length - 1) {
+                <line
+                  [attr.x1]="i * 100 + 50"
+                  [attr.y1]="300 - (chartData[i].value / maxValue()) * 250"
+                  [attr.x2]="(i + 1) * 100 + 50"
+                  [attr.y2]="300 - (chartData[i + 1].value / maxValue()) * 250"
+                  stroke="#4f46e5"
+                  stroke-width="3"
+                />
+              }
+              <circle
+                [attr.cx]="i * 100 + 50"
+                [attr.cy]="300 - (point.value / maxValue()) * 250"
+                r="5"
+                fill="#4f46e5"
+              />
+              <text
+                [attr.x]="i * 100 + 50"
+                y="290"
+                text-anchor="middle"
+                font-size="12"
+                fill="#64748b">
+                {{ point.label }}
+              </text>
+            }
+          </svg>
+        } @else {
+          <div class="bar-chart">
+            @for (point of chartData; track point.label) {
+              <div class="bar-item">
+                <div class="bar-wrapper">
+                  <div
+                    class="bar"
+                    [style.height.%]="(point.value / maxValue()) * 100">
+                  </div>
+                </div>
+                <span class="bar-label">{{ point.label }}</span>
+                <span class="bar-value">{{ point.value }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="insights-section">
+      <h2>Key Insights</h2>
+      <div class="insight-cards">
+        <div class="insight-card">
+          <h3>🚀 Peak Performance</h3>
+          <p>Friday showed highest activity with 750 active users</p>
+        </div>
+        <div class="insight-card">
+          <h3>📈 Growth Trend</h3>
+          <p>User engagement increased by 23.5% this week</p>
+        </div>
+        <div class="insight-card">
+          <h3>🎯 Feature Adoption</h3>
+          <p>28 features actively used with 94.2% success rate</p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

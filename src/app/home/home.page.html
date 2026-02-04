@@ -1,0 +1,153 @@
+<div class="page">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">GB</span>
+      <div>
+        <p class="brand-name">Flagship Studio</p>
+        <p class="brand-tag">Remote control for every release.</p>
+      </div>
+    </div>
+    <nav class="nav" aria-label="Primary">
+      <a routerLink="/dashboard">Dashboard</a>
+      <a routerLink="/profile">Profile</a>
+      <a routerLink="/notifications">Notifications</a>
+      <a routerLink="/settings">Settings</a>
+      <a href="#flags">Flags</a>
+    </nav>
+    <div class="topbar-actions">
+      <a class="button ghost" href="#flags">View flags</a>
+      <a class="button primary" href="#actions">View actions</a>
+    </div>
+  </header>
+
+  <section class="hero" [style.--hero-accent]="heroAccent()">
+    <div class="hero-copy">
+      <div class="eyebrow">{{ heroCopy().eyebrow }}</div>
+      <h1>{{ heroCopy().title }}</h1>
+      <p class="hero-subtitle">{{ heroCopy().subtitle }}</p>
+      <div class="hero-actions">
+        <button class="button primary" type="button">Start rollout</button>
+        <a class="button ghost" href="#actions">Explore actions</a>
+      </div>
+      <div class="hero-tags">
+        <span class="tag">{{ heroCopy().badge }}</span>
+        <span class="tag">Instant rollback</span>
+        <span class="tag">No deploys</span>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="panel-card">
+        <p class="panel-label">Current rollout</p>
+        <p class="panel-value">28%</p>
+        <div class="panel-track">
+          <span class="panel-bar"></span>
+        </div>
+      </div>
+      <div class="panel-card">
+        <p class="panel-label">Live experiments</p>
+        <p class="panel-value">12</p>
+        <p class="panel-meta">6 shipping today</p>
+      </div>
+      <div class="panel-card panel-card--accent">
+        <p class="panel-label">Risk level</p>
+        <p class="panel-value">Low</p>
+        <p class="panel-meta">Auto guardrails on</p>
+      </div>
+    </div>
+  </section>
+
+  @if (showQuickActions()) {
+    <section class="quick-actions" id="actions">
+      <div class="section-head">
+        <div>
+          <h2>Quick actions</h2>
+          <p>Keep control in the hands of the team, not the deploy button.</p>
+        </div>
+        <span class="section-pill">Feature flag enabled</span>
+      </div>
+      <div class="action-grid">
+        @for (action of quickActions(); track action.id) {
+          <article class="action-card">
+            <span [class]="action.iconClass"></span>
+            <div>
+              <h3>{{ action.title }}</h3>
+              <p>{{ action.description }}</p>
+              <span class="action-meta">{{ action.meta }}</span>
+            </div>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  @if (showTestimonials()) {
+    <section class="testimonials" id="stories">
+      <div class="section-head">
+        <div>
+          <h2>Teams shipping with confidence</h2>
+          <p>Real teams, real toggles, real impact.</p>
+        </div>
+        <span class="section-pill">Feature flag enabled</span>
+      </div>
+      <div class="testimonial-grid">
+        @for (item of testimonials; track item.id) {
+          <article class="testimonial-card">
+            <p class="testimonial-quote">"{{ item.quote }}"</p>
+            <p class="testimonial-name">{{ item.name }}</p>
+            <p class="testimonial-role">{{ item.role }} · {{ item.company }}</p>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  <section class="flag-panel" id="flags">
+    <div class="section-head">
+      <div>
+        <h2>Feature flag console</h2>
+        <p>Updated from GrowthBook without deploying.</p>
+      </div>
+      <button class="button ghost" type="button" (click)="refreshFlags()">Refresh flags</button>
+    </div>
+
+    <div class="flag-status" role="status">
+      <span class="status-pill" [class.is-ready]="statusTone() === 'ready'"
+        [class.is-loading]="statusTone() === 'loading'"
+        [class.is-error]="statusTone() === 'error'"
+        [class.is-idle]="statusTone() === 'idle'">
+        {{ statusLabel() }}
+      </span>
+      <span class="status-note">
+        {{ refreshIntervalLabel() }}
+      </span>
+    </div>
+
+    @if (!configured) {
+      <div class="flag-warning">
+        Set your GrowthBook client key in <code>src/app/growthbook.config.ts</code>.
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="flag-error">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <div class="flag-grid">
+      @for (flag of flagRows(); track flag.key) {
+        <div class="flag-card">
+          <div class="flag-head">
+            <span class="flag-key">{{ flag.key }}</span>
+            <span class="flag-type">{{ flag.type }}</span>
+          </div>
+          <p class="flag-label">{{ flag.label }}</p>
+          <div class="flag-values">
+            <span class="flag-live">{{ flag.value }}</span>
+            <span class="flag-fallback">fallback: {{ flag.fallback }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</div>
